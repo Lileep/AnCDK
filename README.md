@@ -53,11 +53,20 @@
 
 
 ## 配置文件
+
+```yaml
+Bukkit/Spigot配置文件示例： 
+1ll73hur1bhm:                           ## CDKey内容
+   command: 'eco give {player} 100 '    ## 使用CDK后要执行的指令
+   op: true                             ### 是否以OP（控制台）身份执行指令
+   once: true                           ### 是否只能执行一次
 ```
-配置文件示例： 
+
+```hocon
+Sponge配置文件示例： 
 "1ll73hur1bhm" {                        ## CDKey内容
     command="eco give {player} 100"     ## 使用CDK后要执行的指令
-    console=true                        ### 使用CDK后要执行的指令
+    console=true                        ### 是否以控制台身份执行指令
     once=true                           ### 是否只能执行一次
 }
 ```
