@@ -97,7 +97,7 @@
 1. 使用任意文本编辑器打开`config/ancdk/ancdk.conf`文件
 
 2. 按照配置文件示例格式进行书写。这里我们将`5diamond`作为CDK的内容。注意once设置为false（目前还未实现每个玩家限领取一次。后续会完善）
- ![title img](https://github.com/Lileep/PixelmonBank/blob/sponge/sample_img/example2.png)
+ ![example2](https://github.com/Lileep/AnCDK/blob/sponge/sample_img/example2.png)
 
 3. 在服务端/客户端中输入`/ancdk reload`重载插件，即可在游戏中输入`/ancdk run 5diamond`领取该CDK
 
