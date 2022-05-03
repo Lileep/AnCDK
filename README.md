@@ -65,7 +65,7 @@ Bukkit/Spigot配置文件示例：
 ```hocon
 Sponge配置文件示例： 
 "1ll73hur1bhm" {                        ## CDKey内容
-    command="eco give {player} 100"     ## 使用CDK后要执行的指令。可在指令前添加"console:"来指定是否以控制台身份执行指令
+    command="console:eco give {player} 100"     ## 使用CDK后要执行的指令。可在指令前添加"console:"来指定是否以控制台身份执行指令
     once=true                           ### 是否只能执行一次
 }
 ```
