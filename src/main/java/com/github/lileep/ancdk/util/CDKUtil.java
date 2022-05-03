@@ -1,5 +1,6 @@
 package com.github.lileep.ancdk.util;
 
+import com.github.lileep.ancdk.AnCDK;
 import com.github.lileep.ancdk.config.ConfigLoader;
 import com.github.lileep.ancdk.lib.Reference;
 import com.google.common.reflect.TypeToken;
@@ -9,13 +10,14 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CDKUtil {
 
-    private static TypeToken setToken = new TypeToken<Set<String>>(){
+    private static TypeToken setToken = new TypeToken<Set<String>>() {
     };
 
     private static Set<String> emptySet = new HashSet<>();
@@ -65,9 +67,9 @@ public class CDKUtil {
         if (Optional.ofNullable(node.getNode(cdkey).getString()).isPresent()) {
             runCDK(cdkey, player);
             try {
-                if (Optional.ofNullable(node.getNode(cdkey, "usedPlayer").getValue(setToken)).isPresent()){
-                    Set<String> tempSet = (HashSet<String>)node.getNode(cdkey, "usedPlayer").getValue(setToken);
-                    if (tempSet.contains(player.getName())){
+                if (Optional.ofNullable(node.getNode(cdkey, "usedPlayer").getValue(setToken)).isPresent()) {
+                    Set<String> tempSet = (HashSet<String>) node.getNode(cdkey, "usedPlayer").getValue(setToken);
+                    if (tempSet.contains(player.getName())) {
                         return false;
                     }
                     tempSet.add(player.getName());
@@ -152,6 +154,21 @@ public class CDKUtil {
             exportNode.getNode(command, counter.get(command).toString()).setValue(key);
         }
         ConfigLoader.getInstance().getExportLoader().save(exportNode);
+        return true;
+    }
+
+    /**
+     * 导为CSV
+     *
+     * @return 是否导出成功
+     */
+    public static boolean exportCSV() {
+        if (!Optional.ofNullable(ConfigLoader.getInstance().getRootNode().getValue()).isPresent()) {
+            return false;
+        }
+        Set<String> cdkSet = ((LinkedHashMap<String, Map<String, String>>) ConfigLoader.getInstance().getRootNode().getValue(LinkedHashMap.class)).keySet();
+        CSVUtil.writeCSVFileData(new File(AnCDK.getInstance().getConfigPath(), "export.csv"), cdkSet);
+
         return true;
     }
 

@@ -39,12 +39,25 @@ public class ACommand {
                     .permission(Reference.PERM_NODE_CREATE)
                     .build();
 
+    public final static CommandSpec EXPORT_CSV =
+            CommandSpec.builder()
+                    .executor(((src, args) -> {
+                        if (CDKUtil.exportCSV()) {
+                            src.sendMessage(TextUtil.prefixedText("§6导出CSV文件成功！请检查配置文件中export.csv"));
+                        } else {
+                            src.sendMessage(TextUtil.prefixedText("§c在导出CSV文件过程中发生错误！请检查！"));
+                        }
+                        return CommandResult.success();
+                    }))
+                    .permission(Reference.PERM_NODE_EXPORT)
+                    .build();
+
     public final static CommandSpec EXPORT =
             CommandSpec.builder()
                     .executor(((src, args) -> {
                         try {
                             if (CDKUtil.exportCDK()) {
-                                src.sendMessage(TextUtil.prefixedText("§6导出成功！请检查配置文件中export.yml"));
+                                src.sendMessage(TextUtil.prefixedText("§6导出成功！请检查配置文件中export.conf"));
                             } else {
                                 src.sendMessage(TextUtil.prefixedText("§c在导出过程中发生错误！请检查！"));
                             }
@@ -53,6 +66,7 @@ public class ACommand {
                         }
                         return CommandResult.success();
                     }))
+                    .child(EXPORT_CSV, "csv")
                     .permission(Reference.PERM_NODE_EXPORT)
                     .build();
 
