@@ -2,7 +2,9 @@ package com.github.lileep.ancdk.util;
 
 import com.github.lileep.ancdk.config.ConfigLoader;
 import com.github.lileep.ancdk.lib.Reference;
+import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
@@ -12,6 +14,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CDKUtil {
+
+    private static TypeToken setToken = new TypeToken<Set<String>>(){
+    };
+
+    private static Set<String> emptySet = new HashSet<>();
 
     /**
      * 运行CDK主逻辑
@@ -58,12 +65,19 @@ public class CDKUtil {
         if (Optional.ofNullable(node.getNode(cdkey).getString()).isPresent()) {
             runCDK(cdkey, player);
             try {
-                if (node.getNode(cdkey, "once").getBoolean()) {
+                if (Optional.ofNullable(node.getNode(cdkey, "usedPlayer").getValue(setToken)).isPresent()){
+                    Set<String> tempSet = (HashSet<String>)node.getNode(cdkey, "usedPlayer").getValue(setToken);
+                    if (tempSet.contains(player.getName())){
+                        return false;
+                    }
+                    tempSet.add(player.getName());
+                    node.getNode(cdkey, "usedPlayer").setValue(tempSet);
+                } else {
                     node.getNode(cdkey).setValue(null);
-                    ConfigLoader.getInstance().getLoader().save(node);
                 }
+                ConfigLoader.getInstance().getLoader().save(node);
                 setLog(cdkey, player.getName(), "use");
-            } catch (IOException e) {
+            } catch (IOException | ObjectMappingException e) {
                 e.printStackTrace();
             }
             return true;
@@ -94,16 +108,19 @@ public class CDKUtil {
      *
      * @param command  CDK对应的命令
      * @param count    创建条数
+     * @param once     是否一次性
      * @param executor 创建者
      * @return 是否创建成功
      * @throws IOException 需处理的读写异常
      */
-    public static boolean createCDK(String command, int count, String executor) throws IOException {
+    public static boolean createCDK(String command, int count, boolean once, String executor) throws IOException, ObjectMappingException {
         ConfigurationNode node = ConfigLoader.getInstance().getRootNode();
         for (int i = 0; i < count; i++) {
             String key = genCDK();
             node.getNode(key, "command").setValue(command);
-            node.getNode(key, "once").setValue(true);
+            if (!once) {
+                node.getNode(key, "usedPlayer").setValue(setToken, emptySet);
+            }
             setLog(key, executor, "create");
         }
         ConfigLoader.getInstance().getLoader().save(node);

@@ -1,11 +1,11 @@
 # AnCDK
- MineCraft服务器CDKey插件，使用这个插件，你可以创建绑定命令的CDK，当玩家输入CDK时，服务器便可以执行相应的指令，本插件可作为连通服务器内与现实世界的桥梁，广泛应用于：“服务器赞助系统、MineCraft无人售卡、服务器活动奖品发放”等多个方面。
+ MineCraft服务器CDKey插件，使用这个插件，你可以创建绑定命令的CDK，当玩家输入CDK时，服务器便可以执行相应的命令，本插件可作为连通服务器内与现实世界的桥梁，广泛应用于：“服务器赞助系统、MineCraft无人售卡、服务器活动奖品发放”等多个方面。
 
 ## 插件特性
 
 1. 全自动一键生成9位以上CDK
 2. 可批量生成同类型CDK
-3. 可设置指令的执行方式（控制台/玩家）
+3. 可设置命令的执行方式（控制台/玩家）
 4. 插件轻量化
 5. 配置文件高度自定义
 6. 可自定义添加CDK
@@ -20,7 +20,7 @@
 
 | 命令 | 功能 |
 | ---- | ---- |
-| /ancdk create [command] [num] | 创建[num]个执行[command]命令的CDK |
+| /ancdk create [--once] [数量] [命令] | 创建`[数量]`个执行`[命令]`的CDK <br> 命令前可使用`console:`指定控制台执行 <br> 使用`--once`参数可让CDK为一次性，否则每个玩家均可使用一次此CDK |
 | /ancdk export | 批量一键导出所有CDK |
 | /ancdk reload | 重载插件配置文件 |
 
@@ -57,16 +57,24 @@
 ```yaml
 Bukkit/Spigot配置文件示例： 
 1ll73hur1bhm:                           ## CDKey内容
-   command: 'eco give {player} 100 '    ## 使用CDK后要执行的指令
-   op: true                             ### 是否以OP（控制台）身份执行指令
+   command: 'eco give {player} 100 '    ## 使用CDK后要执行的命令
+   op: true                             ### 是否以OP（控制台）身份执行命令
    only: true                           ### 是否只能执行一次
 ```
 
 ```hocon
 Sponge配置文件示例： 
-"1ll73hur1bhm" {                        ## CDKey内容
-    command="console:eco give {player} 100"     ## 使用CDK后要执行的指令。可在指令前添加"console:"来指定是否以控制台身份执行指令
-    once=true                           ### 是否只能执行一次
+仅可执行一次的CDK： 
+"1ll73hur1bhm" {                                 ## CDKey内容
+    command="console:eco give {player} 100"      ## 使用CDK后要执行的命令。可在命令前添加"console:"来指定是否以控制台身份执行
+}
+
+每个玩家均可执行一次的CDK： 
+"4v1j6bjvtti" {                                             ## CDKey内容
+    command="console:give {player} minecraft:diamond 5"     ## 使用CDK后要执行的命令
+    usedPlayer=[                                            ### 玩家列表。执行过的玩家会被记录在此，默认为空（即[]）
+        Lileep
+    ]
 }
 ```
 
@@ -74,9 +82,9 @@ Sponge配置文件示例：
 
 例1：生成10个CDK，玩家执行后获得100枚游戏币
 
-思路：生成10个CDK，绑定指令为"/eco give {player} 100"
+思路：生成10个CDK，绑定命令为"/eco give {player} 100"
 
-1. 使用指令“/ancdk create eco give {player} 100 10”批量生成CDK！
+1. 使用命令“/ancdk create eco give {player} 100 10”批量生成CDK！
 
 [![](https://s2.loli.net/2022/02/20/7V8fLOdnK2EztXg.png)](https://s2.loli.net/2022/02/20/7V8fLOdnK2EztXg.png)
 
@@ -88,7 +96,7 @@ Sponge配置文件示例：
 
 [![](https://s2.loli.net/2022/02/20/EuneWjSbaCNtsrV.png)](https://s2.loli.net/2022/02/20/EuneWjSbaCNtsrV.png)
 
-4. 亲爱的玩家到服务器使用指令“/ancdk [CDK]”使用CDK
+4. 亲爱的玩家到服务器使用命令“/ancdk [CDK]”使用CDK
 
 [![](https://s2.loli.net/2022/02/20/L1INUvGDcYpRSPy.png)](https://s2.loli.net/2022/02/20/L1INUvGDcYpRSPy.png)
 
@@ -100,7 +108,7 @@ Sponge配置文件示例：
 
 例2：手动添加1个永久的CDK，玩家执行后控制台发放5个钻石
 
-思路：打开配置文件并手动写入CDK，绑定指令为`console:give {player} minecraft:diamond 5`
+思路：打开配置文件并手动写入CDK，绑定命令为`console:give {player} minecraft:diamond 5`
 
 1. 使用任意文本编辑器打开`config/ancdk/ancdk.conf`文件
 

@@ -4,6 +4,7 @@ import com.github.lileep.ancdk.config.ConfigLoader;
 import com.github.lileep.ancdk.lib.Reference;
 import com.github.lileep.ancdk.util.CDKUtil;
 import com.github.lileep.ancdk.util.TextUtil;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
@@ -40,16 +41,17 @@ public class ACommand {
                         String command = args.<String>getOne("command").get();
                         int count = args.<Integer>getOne("count").get();
                         try {
-                            if (CDKUtil.createCDK(command, count, (src instanceof Player?(((Player)src).getName()):("console")))) {
+                            if (CDKUtil.createCDK(command, count, args.hasAny("once"), (src instanceof Player ? (((Player) src).getName()) : ("console")))) {
                                 src.sendMessage(TextUtil.prefixedText("§6设置成功！成功创建§c %d §6张卡密, 详情请浏览配置文件", count));
                                 return CommandResult.success();
                             }
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        } catch (IOException | ObjectMappingException e) {
+                            src.sendMessage(TextUtil.prefixedText("§c设置失败！"));
                         }
                         return CommandResult.empty();
                     }))
                     .arguments(
+                            GenericArguments.flags().flag("-once").buildWith(GenericArguments.none()),
                             GenericArguments.integer(Text.of("count")),
                             GenericArguments.remainingJoinedStrings(Text.of("command"))
                     )
