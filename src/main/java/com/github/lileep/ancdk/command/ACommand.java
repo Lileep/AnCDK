@@ -12,28 +12,9 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class ACommand {
-
-    public final static CommandSpec RUN =
-            CommandSpec.builder()
-                    .executor(((src, args) -> {
-                        if (src instanceof Player) {
-                            String cdkey = args.<String>getOne("cdkey").get();
-                            if (CDKUtil.runCDKandLog(cdkey, (Player) src)) {
-                                src.sendMessage(TextUtil.prefixedText("§6激活码领取成功！"));
-                                return CommandResult.success();
-                            } else {
-                                src.sendMessage(TextUtil.prefixedText("§c激活码领取失败"));
-                            }
-                        }
-                        return CommandResult.empty();
-                    }))
-                    .arguments(
-                            GenericArguments.remainingJoinedStrings(Text.of("cdkey"))
-                    )
-                    .permission(Reference.PERM_NODE_USER)
-                    .build();
 
     public final static CommandSpec CREATE =
             CommandSpec.builder()
@@ -88,25 +69,40 @@ public class ACommand {
     public final static CommandSpec BASE =
             CommandSpec.builder()
                     .executor(((src, args) -> {
+                        if (args.getOne("cdkey") != Optional.empty()) {
+                            if (src instanceof Player && src.hasPermission(Reference.USER_NODE)) {
+                                String cdkey = args.<String>getOne("cdkey").get();
+                                if (CDKUtil.runCDKandLog(cdkey, (Player) src)) {
+                                    src.sendMessage(TextUtil.prefixedText("§6激活码领取成功！"));
+                                    return CommandResult.success();
+                                } else {
+                                    src.sendMessage(TextUtil.prefixedText("§c激活码领取失败"));
+                                }
+                            }
+                            return CommandResult.empty();
+                        }
+
                         if (src.hasPermission(Reference.PERM_NODE_ADMIN)) {
                             src.sendMessages(
                                     Text.of("§a==============================AnCDK=============================="),
-                                    Text.of("§9/ancdk create [num] [command]    创建[num]个执行[command]命令的CDK"),
-                                    Text.of("§9/ancdk export                    批量一键导出所有CDK"),
-                                    Text.of("§9/ancdk reload                    重载配置文件"),
-                                    Text.of("§9/ancdk run [CDK]                 使用CDK"),
+                                    Text.of("§9/ancdk create <--once> [num] [command]    创建[num]个执行[command]命令的CDK"),
+                                    Text.of("§9/ancdk export                             批量一键导出所有CDK"),
+                                    Text.of("§9/ancdk reload                             重载配置文件"),
+                                    Text.of("§9/ancdk [CDK]                              使用CDK"),
                                     Text.of("§a==============================AnCDK==============================")
                             );
                         } else {
                             src.sendMessages(
                                     Text.of("§a==============================AnCDK=============================="),
-                                    Text.of("§9/ancdk run [CDK]                 使用CDK"),
+                                    Text.of("§9/ancdk [CDK]                              使用CDK"),
                                     Text.of("§a==============================AnCDK==============================")
                             );
                         }
                         return CommandResult.success();
                     }))
-                    .child(RUN, "run", "get")
+                    .arguments(
+                            GenericArguments.optionalWeak(GenericArguments.remainingJoinedStrings(Text.of("cdkey")))
+                    )
                     .child(CREATE, "create", "generate", "gen", "c")
                     .child(EXPORT, "export")
                     .child(RELOAD, "reload")
