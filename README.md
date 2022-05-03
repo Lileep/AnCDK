@@ -28,7 +28,7 @@
 
 | 命令 | 功能 |
 | ---- | ---- |
-| /ancdk run [CDK] | 使用CDK。`run`也可换为`get` |
+| /ancdk [CDK] | 使用CDK |
 
 ## 插件权限
 
@@ -88,7 +88,9 @@ Sponge配置文件示例：
 
 [![](https://s2.loli.net/2022/02/20/7V8fLOdnK2EztXg.png)](https://s2.loli.net/2022/02/20/7V8fLOdnK2EztXg.png)
 
-2. 到插件配置文件“plugins/AnCDK”目录下，打开Config.yml，获取CDK！
+2. Bukkit/Spigot端到插件配置文件`“`plugins/AnCDK`”`目录下，打开Config.yml，获取CDK！
+
+Sponge端为`config/ancdk`目录下的`cdks.conf`
 
 [![](https://s2.loli.net/2022/02/20/8z91nwyL6lGihPF.png)](https://s2.loli.net/2022/02/20/8z91nwyL6lGihPF.png)
 
@@ -106,17 +108,17 @@ Sponge配置文件示例：
 
 ***
 
-例2：手动添加1个永久的CDK，玩家执行后控制台发放5个钻石
+例2：手动添加1个永久的CDK，每个玩家执行后控制台会为其发放5个钻石
 
 思路：打开配置文件并手动写入CDK，绑定命令为`console:give {player} minecraft:diamond 5`
 
 1. 使用任意文本编辑器打开`config/ancdk/ancdk.conf`文件
 
-2. 按照配置文件示例格式进行书写。这里我们将`5diamond`作为CDK的内容。注意once设置为false（目前还未实现每个玩家限领取一次。后续会完善）
+2. 按照配置文件示例格式进行书写。这里我们将`5diamond`作为CDK的内容，并将指令和空的已使用玩家列表写进去
 
 ![example2](https://github.com/Lileep/AnCDK/blob/sponge/sample_img/example2.png)
 
-3. 在服务端/客户端中输入`/ancdk reload`重载插件，即可在游戏中输入`/ancdk run 5diamond`领取该CDK
+3. 在服务端/客户端中输入`/ancdk reload`重载插件或直接重启，即可在游戏中输入`/ancdk 5diamond`领取该CDK
 
 
 ## 插件下载
