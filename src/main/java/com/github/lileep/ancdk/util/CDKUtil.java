@@ -1,6 +1,7 @@
 package com.github.lileep.ancdk.util;
 
 import com.github.lileep.ancdk.config.ConfigLoader;
+import com.github.lileep.ancdk.lib.Reference;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -14,6 +15,7 @@ public class CDKUtil {
 
     /**
      * 运行CDK主逻辑
+     * 对于控制台指令剪掉其"console:"部分
      *
      * @param cdk    待处理的CDK
      * @param player 执行者
@@ -21,8 +23,9 @@ public class CDKUtil {
     private static void runCDK(String cdk, Player player) {
         String command = ConfigLoader.getInstance().getRootNode().getNode(cdk, "command").getString().replace("{player}", player.getName());
         CommandSource source;
-        if (ConfigLoader.getInstance().getRootNode().getNode(cdk, "console").getBoolean()) {
+        if (command.startsWith(Reference.CONSOLE_PREFIX)) {
             source = Sponge.getServer().getConsole();
+            command = command.substring(Reference.CONSOLE_PREFIX.length());
         } else {
             source = player;
         }
@@ -89,8 +92,9 @@ public class CDKUtil {
     /**
      * 创建CDK
      *
-     * @param command CDK对应的命令
-     * @param count   创建条数
+     * @param command  CDK对应的命令
+     * @param count    创建条数
+     * @param executor 创建者
      * @return 是否创建成功
      * @throws IOException 需处理的读写异常
      */
@@ -99,7 +103,6 @@ public class CDKUtil {
         for (int i = 0; i < count; i++) {
             String key = genCDK();
             node.getNode(key, "command").setValue(command);
-            node.getNode(key, "console").setValue(true);
             node.getNode(key, "once").setValue(true);
             setLog(key, executor, "create");
         }

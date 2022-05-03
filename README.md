@@ -65,8 +65,7 @@ Bukkit/Spigot配置文件示例：
 ```hocon
 Sponge配置文件示例： 
 "1ll73hur1bhm" {                        ## CDKey内容
-    command="eco give {player} 100"     ## 使用CDK后要执行的指令
-    console=true                        ### 是否以控制台身份执行指令
+    command="eco give {player} 100"     ## 使用CDK后要执行的指令。可在指令前添加"console:"来指定是否以控制台身份执行指令
     once=true                           ### 是否只能执行一次
 }
 ```
@@ -99,9 +98,9 @@ Sponge配置文件示例：
 
 ***
 
-例2：手动添加1个永久的CDK，玩家执行后获得5个钻石
+例2：手动添加1个永久的CDK，玩家执行后控制台发放5个钻石
 
-思路：打开配置文件并手动写入CDK，绑定指令为`/give {player} minecraft:diamond 5`
+思路：打开配置文件并手动写入CDK，绑定指令为`console:give {player} minecraft:diamond 5`
 
 1. 使用任意文本编辑器打开`config/ancdk/ancdk.conf`文件
 
