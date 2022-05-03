@@ -17,7 +17,7 @@ import java.io.File;
 @Plugin(
         id = Reference.PLUGIN_ID,
         name = Reference.PLUGIN_NAME,
-        description = "test",
+        description = "A sponge plugin that proc CDK",
         version = Reference.VERSION,
         authors = {"Enron233", "Lileep"}
 )

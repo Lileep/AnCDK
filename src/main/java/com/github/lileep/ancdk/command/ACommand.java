@@ -105,7 +105,7 @@ public class ACommand {
                         return CommandResult.success();
                     }))
                     .child(RUN, "run", "get")
-                    .child(CREATE, "create", "generate", "gen")
+                    .child(CREATE, "create", "generate", "gen", "c")
                     .child(EXPORT, "export")
                     .child(RELOAD, "reload")
                     .build();
