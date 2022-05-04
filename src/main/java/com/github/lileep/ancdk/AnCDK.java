@@ -11,6 +11,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.File;
 
@@ -39,12 +40,19 @@ public class AnCDK {
     @ConfigDir(sharedRoot = false)
     private File dir;
 
+    @Inject
+    private PluginContainer pluginContainer;
+
     public Logger getLogger() {
         return logger;
     }
 
     public File getConfigPath() {
         return dir;
+    }
+
+    public PluginContainer getPluginContainer() {
+        return pluginContainer;
     }
 
     @Listener

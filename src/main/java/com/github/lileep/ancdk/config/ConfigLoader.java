@@ -5,6 +5,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.Sponge;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,10 +21,11 @@ public class ConfigLoader {
     }
 
     private ConfigurationLoader<CommentedConfigurationNode> loader;
+    private ConfigurationLoader<CommentedConfigurationNode> cdkLoader;
     private ConfigurationLoader<CommentedConfigurationNode> exportLoader;
-    private ConfigurationLoader<CommentedConfigurationNode> loggerLoader;
 
     private ConfigurationNode rootNode;
+    private ConfigurationNode cdkNode;
     private ConfigurationNode exportNode;
 
     private boolean useDB = false;
@@ -37,6 +39,14 @@ public class ConfigLoader {
         return this.rootNode;
     }
 
+    public ConfigurationLoader<CommentedConfigurationNode> getCdkLoader() {
+        return this.cdkLoader;
+    }
+
+    public ConfigurationNode getCdkNode() {
+        return this.cdkNode;
+    }
+
     public ConfigurationLoader<CommentedConfigurationNode> getExportLoader() {
         return this.exportLoader;
     }
@@ -45,28 +55,28 @@ public class ConfigLoader {
         return this.exportNode;
     }
 
-    public ConfigurationLoader<CommentedConfigurationNode> getLoggerLoader() {
-        return this.loggerLoader;
-    }
-
-    public ConfigurationNode getLoggerNode() {
-        return this.loggerNode;
+    public boolean isUseDB() {
+        return useDB;
     }
 
     public File getLogFile() {
         return logFile;
     }
 
-    public void reload(){
+    public void reload() {
         try {
-            rootNode = loader.load();
+            rootNode.mergeValuesFrom(loader.load());
             loader.save(rootNode);
 
-            exportNode = exportLoader.load();
-            exportLoader.save(exportNode);
+            if (useDB) {
+                //TODO: Reload db
+            } else {
+                cdkNode = cdkLoader.load();
+                cdkLoader.save(cdkNode);
 
-            loggerNode = loggerLoader.load();
-            loggerLoader.save(loggerNode);
+                exportNode = exportLoader.load();
+                exportLoader.save(exportNode);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -82,19 +92,43 @@ public class ConfigLoader {
             }
         }
         try {
+            //Load blank config
+            Sponge.getAssetManager()
+                    .getAsset(AnCDK.getInstance().getPluginContainer(), "ancdk.conf")
+                    .get()
+                    .copyToDirectory(AnCDK.getInstance().getConfigPath().toPath());
+
             loader = HoconConfigurationLoader
                     .builder()
-                    .setFile(new File(configPath, "cdks.conf"))
+                    .setFile(new File(configPath, "ancdk.conf"))
                     .build();
             rootNode = loader.load();
+            //Auto add new settings
+            rootNode.mergeValuesFrom(
+                    HoconConfigurationLoader.builder()
+                    .setURL(AnCDK.getInstance().getPluginContainer().getAsset("ancdk.conf").get().getUrl())
+                    .build().load()
+            );
             loader.save(rootNode);
 
-            exportLoader = HoconConfigurationLoader
-                    .builder()
-                    .setFile(new File(configPath, "export.conf"))
-                    .build();
-            exportNode = exportLoader.load();
-            exportLoader.save(exportNode);
+            if (rootNode.getNode("Database", "useDatabase").getBoolean()) {
+                useDB = true;
+
+            } else {
+                cdkLoader = HoconConfigurationLoader
+                        .builder()
+                        .setFile(new File(configPath, "cdks.conf"))
+                        .build();
+                cdkNode = cdkLoader.load();
+                cdkLoader.save(cdkNode);
+
+                exportLoader = HoconConfigurationLoader
+                        .builder()
+                        .setFile(new File(configPath, "export.conf"))
+                        .build();
+                exportNode = exportLoader.load();
+                exportLoader.save(exportNode);
+            }
 
             logFile = new File(configPath, "info.log");
 
