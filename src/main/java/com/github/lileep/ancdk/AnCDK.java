@@ -2,6 +2,10 @@ package com.github.lileep.ancdk;
 
 import com.github.lileep.ancdk.command.ACommand;
 import com.github.lileep.ancdk.config.ConfigLoader;
+import com.github.lileep.ancdk.handler.CDKCfgHandler;
+import com.github.lileep.ancdk.handler.CDKDbHandler;
+import com.github.lileep.ancdk.handler.DatabaseHandler;
+import com.github.lileep.ancdk.handler.api.AbstractCDKHandler;
 import com.github.lileep.ancdk.lib.Reference;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -43,6 +47,8 @@ public class AnCDK {
     @Inject
     private PluginContainer pluginContainer;
 
+    private AbstractCDKHandler cdkHandler;
+
     public Logger getLogger() {
         return logger;
     }
@@ -55,11 +61,22 @@ public class AnCDK {
         return pluginContainer;
     }
 
+    public AbstractCDKHandler getCdkHandler() {
+        return cdkHandler;
+    }
+
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         instance = this;
 
         new ConfigLoader();
+
+        if (ConfigLoader.getInstance().isUseDB()){
+            new DatabaseHandler();
+            cdkHandler = new CDKDbHandler();
+        } else {
+            cdkHandler = new CDKCfgHandler();
+        }
 
         Sponge.getCommandManager().register(getInstance(), ACommand.BASE, "ancdk", "ancdkey", "cdk", "cdkey");
 

@@ -68,15 +68,13 @@ public class ConfigLoader {
             rootNode.mergeValuesFrom(loader.load());
             loader.save(rootNode);
 
-            if (useDB) {
-                //TODO: Reload db
-            } else {
+            if (!useDB) {
                 cdkNode = cdkLoader.load();
                 cdkLoader.save(cdkNode);
-
-                exportNode = exportLoader.load();
-                exportLoader.save(exportNode);
             }
+
+            exportNode = exportLoader.load();
+            exportLoader.save(exportNode);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,14 +104,13 @@ public class ConfigLoader {
             //Auto add new settings
             rootNode.mergeValuesFrom(
                     HoconConfigurationLoader.builder()
-                    .setURL(AnCDK.getInstance().getPluginContainer().getAsset("ancdk.conf").get().getUrl())
-                    .build().load()
+                            .setURL(AnCDK.getInstance().getPluginContainer().getAsset("ancdk.conf").get().getUrl())
+                            .build().load()
             );
             loader.save(rootNode);
 
             if (rootNode.getNode("Database", "useDatabase").getBoolean()) {
                 useDB = true;
-
             } else {
                 cdkLoader = HoconConfigurationLoader
                         .builder()
@@ -121,14 +118,14 @@ public class ConfigLoader {
                         .build();
                 cdkNode = cdkLoader.load();
                 cdkLoader.save(cdkNode);
-
-                exportLoader = HoconConfigurationLoader
-                        .builder()
-                        .setFile(new File(configPath, "export.conf"))
-                        .build();
-                exportNode = exportLoader.load();
-                exportLoader.save(exportNode);
             }
+
+            exportLoader = HoconConfigurationLoader
+                    .builder()
+                    .setFile(new File(configPath, "export.conf"))
+                    .build();
+            exportNode = exportLoader.load();
+            exportLoader.save(exportNode);
 
             logFile = new File(configPath, "info.log");
 
