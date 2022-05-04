@@ -10,8 +10,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -30,7 +30,7 @@ public class CDKUtil {
      * @param player 执行者
      */
     private static void runCDK(String cdk, Player player) {
-        String command = ConfigLoader.getInstance().getRootNode().getNode(cdk, "command").getString().replace("{player}", player.getName());
+        String command = ConfigLoader.getInstance().getCdkNode().getNode(cdk, "command").getString().replace("{player}", player.getName());
         CommandSource source;
         if (command.startsWith(Reference.CONSOLE_PREFIX)) {
             source = Sponge.getServer().getConsole();
@@ -41,18 +41,25 @@ public class CDKUtil {
         Sponge.getCommandManager().process(source, command);
     }
 
+
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
+
     /**
      * 日志记录主逻辑
      *
-     * @param cdk      待记录的CDK
-     * @param executor 此条记录的操作来源
-     * @throws IOException 需处理的读写异常
+     * @param executor  此条记录的操作来源
+     * @param operation 操作
+     * @param cdks      待记录的CDK
      */
-    private static void setLog(String cdk, String executor, String operation) throws IOException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
-        ConfigurationNode node = ConfigLoader.getInstance().getLoggerNode();
-        node.getNode(formatter.format(new Date(System.currentTimeMillis())) + executor + " " + cdk).setValue(operation);
-        ConfigLoader.getInstance().getLoggerLoader().save(node);
+    private static void setLog(String executor, String operation, String... cdks) {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ConfigLoader.getInstance().getLogFile(), true), StandardCharsets.UTF_8))) {
+            for (String cdk : cdks) {
+                bw.write(FORMATTER.format(new Date(System.currentTimeMillis())) + executor + " " + operation + " " + cdk);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -63,7 +70,7 @@ public class CDKUtil {
      * @return 是否运行成功
      */
     public static boolean runCDKandLog(String cdkey, Player player) {
-        ConfigurationNode node = ConfigLoader.getInstance().getRootNode();
+        ConfigurationNode node = ConfigLoader.getInstance().getCdkNode();
         if (Optional.ofNullable(node.getNode(cdkey).getString()).isPresent()) {
             runCDK(cdkey, player);
             try {
@@ -77,8 +84,10 @@ public class CDKUtil {
                 } else {
                     node.getNode(cdkey).setValue(null);
                 }
-                ConfigLoader.getInstance().getLoader().save(node);
-                setLog(cdkey, player.getName(), "use");
+                ConfigLoader.getInstance().getCdkLoader().save(node);
+                if (ConfigLoader.getInstance().getRootNode().getNode("General", "useLog").getBoolean()) {
+                    setLog(player.getName(), "use", cdkey);
+                }
             } catch (IOException | ObjectMappingException e) {
                 e.printStackTrace();
             }
@@ -116,16 +125,29 @@ public class CDKUtil {
      * @throws IOException 需处理的读写异常
      */
     public static boolean createCDK(String command, int count, boolean once, String executor) throws IOException, ObjectMappingException {
-        ConfigurationNode node = ConfigLoader.getInstance().getRootNode();
-        for (int i = 0; i < count; i++) {
-            String key = genCDK();
-            node.getNode(key, "command").setValue(command);
-            if (!once) {
-                node.getNode(key, "usedPlayer").setValue(setToken, emptySet);
+        ConfigurationNode node = ConfigLoader.getInstance().getCdkNode();
+        if (ConfigLoader.getInstance().getRootNode().getNode("General", "useLog").getBoolean()) {
+            List<String> keyList = new ArrayList<>();
+            for (int i = 0; i < count; i++) {
+                String key = genCDK();
+                node.getNode(key, "command").setValue(command);
+                if (!once) {
+                    node.getNode(key, "usedPlayer").setValue(setToken, emptySet);
+                }
+                keyList.add(key);
             }
-            setLog(key, executor, "create");
+            String[] tempStr = new String[keyList.size()];
+            setLog(executor, "create", keyList.toArray(tempStr));
+        } else {
+            for (int i = 0; i < count; i++) {
+                String key = genCDK();
+                node.getNode(key, "command").setValue(command);
+                if (!once) {
+                    node.getNode(key, "usedPlayer").setValue(setToken, emptySet);
+                }
+            }
         }
-        ConfigLoader.getInstance().getLoader().save(node);
+        ConfigLoader.getInstance().getCdkLoader().save(node);
         return true;
     }
 
@@ -141,10 +163,10 @@ public class CDKUtil {
 //        for (Map<String, String> sets : cdkList.values()) {
 //            AnCDK.getInstance().getLogger().info(sets.get("command"));
 //        }
-        if (!Optional.ofNullable(ConfigLoader.getInstance().getRootNode().getValue()).isPresent()) {
+        if (!Optional.ofNullable(ConfigLoader.getInstance().getCdkNode().getValue()).isPresent()) {
             return false;
         }
-        Map<String, Map<String, String>> cdkList = (LinkedHashMap<String, Map<String, String>>) ConfigLoader.getInstance().getRootNode().getValue(LinkedHashMap.class);
+        Map<String, Map<String, String>> cdkList = (LinkedHashMap<String, Map<String, String>>) ConfigLoader.getInstance().getCdkNode().getValue(LinkedHashMap.class);
         ConfigurationNode exportNode = ConfigLoader.getInstance().getExportNode();
 
         Map<String, Integer> counter = new LinkedHashMap<>();
@@ -163,10 +185,10 @@ public class CDKUtil {
      * @return 是否导出成功
      */
     public static boolean exportCSV() {
-        if (!Optional.ofNullable(ConfigLoader.getInstance().getRootNode().getValue()).isPresent()) {
+        if (!Optional.ofNullable(ConfigLoader.getInstance().getCdkNode().getValue()).isPresent()) {
             return false;
         }
-        Set<String> cdkSet = ((LinkedHashMap<String, Map<String, String>>) ConfigLoader.getInstance().getRootNode().getValue(LinkedHashMap.class)).keySet();
+        Set<String> cdkSet = ((LinkedHashMap<String, Map<String, String>>) ConfigLoader.getInstance().getCdkNode().getValue(LinkedHashMap.class)).keySet();
         CSVUtil.writeCSVFileData(new File(AnCDK.getInstance().getConfigPath(), "export.csv"), cdkSet);
 
         return true;

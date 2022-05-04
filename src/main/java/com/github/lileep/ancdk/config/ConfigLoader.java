@@ -25,7 +25,9 @@ public class ConfigLoader {
 
     private ConfigurationNode rootNode;
     private ConfigurationNode exportNode;
-    private ConfigurationNode loggerNode;
+
+    private boolean useDB = false;
+    private File logFile;
 
     public ConfigurationLoader<CommentedConfigurationNode> getLoader() {
         return this.loader;
@@ -49,6 +51,10 @@ public class ConfigLoader {
 
     public ConfigurationNode getLoggerNode() {
         return this.loggerNode;
+    }
+
+    public File getLogFile() {
+        return logFile;
     }
 
     public void reload(){
@@ -90,17 +96,7 @@ public class ConfigLoader {
             exportNode = exportLoader.load();
             exportLoader.save(exportNode);
 
-            loggerLoader = HoconConfigurationLoader
-                    .builder()
-                    .setFile(new File(configPath, "info.log"))
-                    .build();
-            loggerNode = loggerLoader.load();
-            loggerLoader.save(loggerNode);
-
-            //            Sponge.getAssetManager()
-//                    .getAsset(AnCDK.getInstance().getPluginContainer(), "ancdk.conf")
-//                    .get()
-//                    .copyToFile(AnCDK.getInstance().getConfigPath());
+            logFile = new File(configPath, "info.log");
 
         } catch (IOException e) {
             e.printStackTrace();
