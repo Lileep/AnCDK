@@ -3,6 +3,7 @@ package com.github.lileep.ancdk.command;
 import com.github.lileep.ancdk.AnCDK;
 import com.github.lileep.ancdk.config.ConfigLoader;
 import com.github.lileep.ancdk.lib.Reference;
+import com.github.lileep.ancdk.util.I18nUtil;
 import com.github.lileep.ancdk.util.TextUtil;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -22,10 +23,10 @@ public class ACommand {
                         if (AnCDK.getInstance()
                                 .getCdkHandler()
                                 .createCDK(command, count, args.hasAny("once"), (src instanceof Player ? (((Player) src).getName()) : ("console")))) {
-                            src.sendMessage(TextUtil.prefixedText("§6设置成功！成功创建§c %d §6张卡密, 详情请浏览配置文件", count));
+                            src.sendMessage(TextUtil.prefixedText(I18nUtil.getI18nText("Command", "createSuccess"), count));
                             return CommandResult.success();
                         }
-                        src.sendMessage(TextUtil.prefixedText("§c设置失败！"));
+                        src.sendMessage(TextUtil.prefixedText(I18nUtil.getI18nText("Command", "createFail")));
                         return CommandResult.empty();
                     }))
                     .arguments(
@@ -42,10 +43,10 @@ public class ACommand {
                         if (AnCDK.getInstance()
                                 .getCdkHandler()
                                 .exportCSV()) {
-                            src.sendMessage(TextUtil.prefixedText("§6导出CSV文件成功！请检查配置文件中export.csv"));
+                            src.sendMessage(TextUtil.prefixedText(I18nUtil.getI18nText("Command", "exportCsvSuccess")));
                             return CommandResult.empty();
                         }
-                        src.sendMessage(TextUtil.prefixedText("§c在导出CSV文件过程中发生错误！请检查！"));
+                        src.sendMessage(TextUtil.prefixedText(I18nUtil.getI18nText("Command", "exportCsvFail")));
                         return CommandResult.success();
                     }))
                     .permission(Reference.PERM_NODE_EXPORT)
@@ -57,10 +58,10 @@ public class ACommand {
                         if (AnCDK.getInstance()
                                 .getCdkHandler()
                                 .exportCDK()) {
-                            src.sendMessage(TextUtil.prefixedText("§6导出成功！请检查配置文件中export.conf"));
+                            src.sendMessage(TextUtil.prefixedText(I18nUtil.getI18nText("Command", "exportSuccess")));
                             return CommandResult.success();
                         }
-                        src.sendMessage(TextUtil.prefixedText("§c在导出过程中发生错误！请检查！"));
+                        src.sendMessage(TextUtil.prefixedText(I18nUtil.getI18nText("Command", "exportFail")));
                         return CommandResult.empty();
                     }))
                     .child(EXPORT_CSV, "csv")
@@ -71,7 +72,7 @@ public class ACommand {
             CommandSpec.builder()
                     .executor(((src, args) -> {
                         ConfigLoader.getInstance().reload();
-                        src.sendMessage(TextUtil.prefixedText("§c重载成功！"));
+                        src.sendMessage(TextUtil.prefixedText(I18nUtil.getI18nText("Command", "reloadSuccess")));
                         return CommandResult.success();
                     }))
                     .permission(Reference.PERM_NODE_RELOAD)
@@ -86,27 +87,27 @@ public class ACommand {
                                 if (AnCDK.getInstance()
                                         .getCdkHandler()
                                         .runCDKandLog(cdkey, (Player) src)) {
-                                    src.sendMessage(TextUtil.prefixedText("§6激活码领取成功！"));
+                                    src.sendMessage(TextUtil.prefixedText(I18nUtil.getI18nText("Command", "runSuccess")));
                                     return CommandResult.success();
                                 }
                             }
-                            src.sendMessage(TextUtil.prefixedText("§c激活码领取失败"));
+                            src.sendMessage(TextUtil.prefixedText(I18nUtil.getI18nText("Command", "runFail")));
                             return CommandResult.empty();
                         }
 
                         if (src.hasPermission(Reference.PERM_NODE_ADMIN)) {
                             src.sendMessages(
                                     Text.of("§a==============================AnCDK=============================="),
-                                    Text.of("§9/ancdk create <--once> [num] [command]    创建[num]个执行[command]命令的CDK"),
-                                    Text.of("§9/ancdk export                             批量一键导出所有CDK"),
-                                    Text.of("§9/ancdk reload                             重载配置文件"),
-                                    Text.of("§9/ancdk [CDK]                              使用CDK"),
+                                    Text.of("§9/ancdk create <--once> [num] [command]    " + I18nUtil.getI18nText("Command", "help", "create")),
+                                    Text.of("§9/ancdk export <csv>                       " + I18nUtil.getI18nText("Command", "help", "export")),
+                                    Text.of("§9/ancdk reload                             " + I18nUtil.getI18nText("Command", "help", "reload")),
+                                    Text.of("§9/ancdk [CDK]                              " + I18nUtil.getI18nText("Command", "help", "run")),
                                     Text.of("§a==============================AnCDK==============================")
                             );
                         } else {
                             src.sendMessages(
                                     Text.of("§a==============================AnCDK=============================="),
-                                    Text.of("§9/ancdk [CDK]                              使用CDK"),
+                                    Text.of("§9/ancdk [CDK]                              " + I18nUtil.getI18nText("Command", "help", "run")),
                                     Text.of("§a==============================AnCDK==============================")
                             );
                         }

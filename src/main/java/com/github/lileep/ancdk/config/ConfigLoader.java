@@ -21,22 +21,24 @@ public class ConfigLoader {
     }
 
     private ConfigurationLoader<CommentedConfigurationNode> loader;
+    private ConfigurationLoader<CommentedConfigurationNode> langLoader;
     private ConfigurationLoader<CommentedConfigurationNode> cdkLoader;
     private ConfigurationLoader<CommentedConfigurationNode> exportLoader;
 
     private ConfigurationNode rootNode;
+    private ConfigurationNode langNode;
     private ConfigurationNode cdkNode;
     private ConfigurationNode exportNode;
 
     private boolean useDB = false;
     private File logFile;
 
-    public ConfigurationLoader<CommentedConfigurationNode> getLoader() {
-        return this.loader;
-    }
-
     public ConfigurationNode getRootNode() {
         return this.rootNode;
+    }
+
+    public ConfigurationNode getLangNode() {
+        return langNode;
     }
 
     public ConfigurationLoader<CommentedConfigurationNode> getCdkLoader() {
@@ -65,8 +67,11 @@ public class ConfigLoader {
 
     public void reload() {
         try {
-            rootNode.mergeValuesFrom(loader.load());
+            rootNode = loader.load();
             loader.save(rootNode);
+
+            langNode = langLoader.load();
+            langLoader.save(langNode);
 
             if (!useDB) {
                 cdkNode = cdkLoader.load();
@@ -94,7 +99,7 @@ public class ConfigLoader {
             Sponge.getAssetManager()
                     .getAsset(AnCDK.getInstance().getPluginContainer(), "ancdk.conf")
                     .get()
-                    .copyToDirectory(AnCDK.getInstance().getConfigPath().toPath());
+                    .copyToDirectory(configPath.toPath());
 
             loader = HoconConfigurationLoader
                     .builder()
@@ -108,6 +113,17 @@ public class ConfigLoader {
                             .build().load()
             );
             loader.save(rootNode);
+
+            Sponge.getAssetManager()
+                    .getAsset(AnCDK.getInstance().getPluginContainer(), "lang/language.conf")
+                    .get()
+                    .copyToDirectory(configPath.toPath());
+            langLoader = HoconConfigurationLoader
+                    .builder()
+                    .setFile(new File(configPath, "language.conf"))
+                    .build();
+            langNode = langLoader.load();
+            langLoader.save(langNode);
 
             if (rootNode.getNode("Database", "useDatabase").getBoolean()) {
                 useDB = true;
