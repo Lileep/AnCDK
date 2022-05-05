@@ -20,8 +20,8 @@
 
 | 命令 | 功能 |
 | ---- | ---- |
-| /ancdk create [--once] [数量] [命令] | 创建`[数量]`个执行`[命令]`的CDK <br> 命令前可使用`console:`指定控制台执行 <br> 使用`--once`参数可让CDK为一次性，否则每个玩家均可使用一次此CDK |
-| /ancdk export | 批量一键导出所有CDK |
+| /ancdk create <--once> [数量] [命令] | 创建`[数量]`个执行`[命令]`的CDK <br> 命令前可使用`console:`指定控制台执行 <br> 使用`--once`参数可让CDK为一次性，否则每个玩家均可使用一次此CDK |
+| /ancdk export <csv> | 批量一键导出所有CDK。使用`csv`参数可以仅将所有cdkey导出为csv文件 |
 | /ancdk reload | 重载插件配置文件 |
 
 > 玩家命令:
@@ -63,7 +63,7 @@ Bukkit/Spigot配置文件示例：
 ```
 
 ```hocon
-Sponge配置文件示例： 
+Sponge配置文件示例（cdks.conf）： 
 仅可执行一次的CDK： 
 "1ll73hur1bhm" {                                 ## CDKey内容
     command="console:eco give {player} 100"      ## 使用CDK后要执行的命令。可在命令前添加"console:"来指定是否以控制台身份执行
@@ -78,9 +78,25 @@ Sponge配置文件示例：
 }
 ```
 
+## 翻译（目前仅sponge）
+
+使用压缩软件找到插件jar包内的`assets/ancdk/lang`文件夹，或者下载发行版中的`lang.zip`文件，随后解压你要使用的语言文件
+
+将语言文件重命名为`language.conf`并替换掉配置目录（默认`config/ancdk`）下的同名文件
+
+重启服务器/重载插件即可
+
+目前本插件自带的翻译文件有：
+
+* English
+
+* 中文（简体）
+
+* 中文（繁體）
+
 ## 使用教程&图文介绍
 
-例1：生成10个CDK，玩家执行后获得100枚游戏币
+例1（Bukkit/Spigot）：生成10个CDK，玩家执行后获得100枚游戏币
 
 思路：生成10个CDK，绑定命令为"/eco give {player} 100"
 
@@ -108,11 +124,11 @@ Sponge端为`config/ancdk`目录下的`cdks.conf`
 
 ***
 
-例2：手动添加1个永久的CDK，每个玩家执行后控制台会为其发放5个钻石
+例2（Sponge）：手动添加1个永久的CDK，每个玩家执行后控制台会为其发放5个钻石
 
 思路：打开配置文件并手动写入CDK，绑定命令为`console:give {player} minecraft:diamond 5`
 
-1. 使用任意文本编辑器打开`config/ancdk/ancdk.conf`文件
+1. 使用任意文本编辑器打开`config/ancdk/cdks.conf`文件
 
 2. 按照配置文件示例格式进行书写。这里我们将`5diamond`作为CDK的内容，并将指令和空的已使用玩家列表写进去
 
@@ -125,7 +141,7 @@ Sponge端为`config/ancdk`目录下的`cdks.conf`
 
 Bukkit/Spigot: https://enron.lanzouv.com/b00pee79a 密码:giih
 
-Sponge: https://wwt.lanzouy.com/iZVVV045zkej 密码:1ddq
+Sponge: https://wwt.lanzouy.com/ipDUH04cg5ad 密码:d3zi
 
 或在仓库release中下载
 
