@@ -1,110 +1,87 @@
 # AnCDK
- MineCraft服务器CDKey插件，使用这个插件，你可以创建绑定命令的CDK，当玩家输入CDK时，服务器便可以执行相应的命令，本插件可作为连通服务器内与现实世界的桥梁，广泛应用于：“服务器赞助系统、MineCraft无人售卡、服务器活动奖品发放”等多个方面。
-
-## 插件特性
-
-1. 全自动一键生成9位以上CDK
-2. 可批量生成同类型CDK
-3. 可设置命令的执行方式（控制台/玩家）
-4. 插件轻量化
-5. 配置文件高度自定义
-6. 可自定义添加CDK
-7. 支持批量导出CDK
-8. （赶紧点击回复，马上你的建议将成为插件的特♂色~
-
-## 插件命令
-
-### Bukkit/Spigot:
-
-> 管理员命令:
-
-| 命令 | 功能 |
-| ---- | ---- |
-| /ancdk create [命令] [数量] | 创建`[数量]`个执行`[命令]`的CDK |
-| /ancdk export | 批量一键导出所有CDK |
-| /ancdk reload | 重载插件配置文件 |
-
-> 玩家命令:
-
-| 命令 | 功能 |
-| ---- | ---- |
-| /ancdk [CDK] | 使用CDK |
-
-### Sponge:
-
-> 本插件命令还有如下写法：`ancdkey`, `cdk`, `cdkey`
-
-> 管理员命令:
-
-| 命令 | 功能 |
-| ---- | ---- |
-| /ancdk create <--once> [数量] [命令] | 创建`[数量]`个执行`[命令]`的CDK <br> 命令前可使用`console:`指定控制台执行 <br> 使用`--once`参数可让CDK为一次性，否则每个玩家均可使用一次此CDK |
-| /ancdk export <csv> | 批量一键导出所有CDK。使用`csv`参数可以仅将所有cdkey导出为csv文件 |
-| /ancdk reload | 重载插件配置文件 |
-
-> 玩家命令:
-
-| 命令 | 功能 |
-| ---- | ---- |
-| /ancdk [CDK] | 使用CDK |
-
-## 插件权限
-
-> 管理员权限
-
-| 节点 | 描述 |
-| ---- | ---- |
-| `ancdk.admin` | 总权限。给予此权限后无需剩余管理员权限 |
-| `ancdk.admin.create` | 创建CDK（仅sponge） |
-| `ancdk.admin.export` | 导出CDK（仅sponge） |
-| `ancdk.admin.reload` | 重载（仅sponge） |
-
-> 用户权限
-
-| 节点 | 描述 |
-| ---- | ---- |
-| `ancdk.user` | 使用CDK的权限（仅sponge，Bukkit/Spigot无需此权限即可使用） |
-
-## 插件变量：
+ A MineCraft Server plugin for CDKeys functions. Using this plugin, you can create CDKs that bind commands. If players enter CDKs, the server would execute the corresponding commands. This plugin can be used as a bridge between servers and the real world. It is widely used in: server sponsorship system, MineCraft auto card issuance, server event prize distribution and many other aspects.
  
-> `{player}`                         代表使用CDK的玩家
+ This repo is the Sponge version of this plugin, you may go to the open-source repo link at the bottom of this repo if you need the Bukkit/Spigot version.
+ 
+## Feature
+
+1. Automatic CDK generation of more than 9-bit
+2. CDK of same types can be generated in batches
+3. Flexible command execution source (console/player)
+4. highly customizable configs
+5. CDK adding manually
+6. Support CDK exporting in batches
+7. Support SQL
+8. Support multiple languages
+9. Feel free to reply if you have any suggestions, it may become a feature of this plugin in future~
+
+## Commands
+
+> The commands of this plugin have several aliases: `ancdkey`, `cdk`, `cdkey`
+
+> Admin Commands:
+
+| Command | Description |
+| ---- | ---- |
+| /ancdk create <--once> [count] [command] | Create `[count]` of CDK(s) that run `[command]` <br> Use param `console:` in front of your command to specify the command source to console <br> Use param `--once` to let your CDK be a one-time one, otherwise all players can run it once |
+| /ancdk export <csv> | Export all CDKs in batches. Use param `csv` can only export cdkeys as a csv file instead of exporting all details |
+| /ancdk reload | Reload the config file of the plugin |
+
+> Player commands:
+
+| Command | Description |
+| ---- | ---- |
+| /ancdk [CDK] | Use `[CDK]` |
+
+## Permissions
+
+> Admin permissions
+
+| Perm Node | Description |
+| ---- | ---- |
+| `ancdk.admin` | Intent admin permission. Admins don't need other perms any more if you granted this one to them. |
+| `ancdk.admin.create` | CDK creating node |
+| `ancdk.admin.export` | CDK exporting node |
+| `ancdk.admin.reload` | Reloading node |
+
+> Player permissions
+
+| Perm Node | Description |
+| ---- | ---- |
+| `ancdk.user` | CDK using node |
+
+## Variables
+ 
+> `{player}`                         Presents the player name that run this CDK
 
 
-## 配置文件
-
-```yaml
-Bukkit/Spigot配置文件示例： 
-1ll73hur1bhm:                           ## CDKey内容
-   command: 'eco give {player} 100 '    ## 使用CDK后要执行的命令
-   op: true                             ### 是否以OP（控制台）身份执行命令
-   only: true                           ### 是否只能执行一次
-```
+## Config
 
 ```hocon
-Sponge配置文件示例（cdks.conf）： 
-仅可执行一次的CDK： 
-"1ll73hur1bhm" {                                 ## CDKey内容
-    command="eco give {player} 100"      ## 使用CDK后要执行的命令。可在命令前添加"console:"来指定是否以控制台身份执行
+Sample config file(cdks.conf): 
+CDK that can be executed only once:
+"1ll73hur1bhm" {                                 ## CDKey content
+    command="econ add {player} 100"              ## The command that will be executed after the cdk is used. Can add "console:" in front of the command to specify the command source to console.
 }
 
-每个玩家均可执行一次的CDK： 
-"4v1j6bjvtti" {                                             ## CDKey内容
-    command="console:give {player} minecraft:diamond 5"     ## 使用CDK后要执行的命令
-    usedPlayer=[                                            ### 玩家列表。执行过的玩家会被记录在此，默认为空（即[]）
+CDK that each player can execute once:
+"4v1j6bjvtti" {                                             ## CDKey content
+    command="console:give {player} minecraft:diamond 5"     ## The command that will be executed after the cdk is used.
+    usedPlayer=[                                            ### The player list. Players who have executed this cdk will be listed here. Default value is empty (i.e. []).
         Lileep
     ]
 }
 ```
 
-## 翻译（目前仅sponge）
+## Translation
 
-使用压缩软件找到插件jar包内的`assets/ancdk/lang`文件夹，或者下载发行版中的`lang.zip`文件，随后解压你要使用的语言文件
+Use a zipping software to locate the `assets/ancdk/lang` folder in the plugin jar, or just download the `lang.zip` file in the release page, then unzip the language file you want to use.
 
-将语言文件重命名为`language.conf`并替换掉配置目录（默认`config/ancdk`）下的同名文件
+Rename the language file to `language.conf` and replace the file with the same name in the config directory (Default is `config/ancdk`)
 
-重启服务器/重载插件即可
+Restart the server/Reload the plugin
 
-目前本插件自带的翻译文件有：
+The translation files that come with the plugin releases now are:
 
 * English
 
@@ -112,58 +89,46 @@ Sponge配置文件示例（cdks.conf）：
 
 * 中文（繁體）
 
-## 使用教程&图文介绍
+Feel free to ask if you'd like to participate in translation!
 
-例1（Bukkit/Spigot）：生成10个CDK，玩家执行后获得100枚游戏币
+## Tutorial
 
-思路：生成10个CDK，绑定命令为"/eco give {player} 100"
+e.g. 1: Use commands to generate 10 one-time CDKs. The console will give players 100 coins after players run it.
 
-1. 使用命令“/ancdk create eco give {player} 100 10”批量生成CDK！
+Idea: Execute the `cdk create` command, and bind command: `console:econ add {player} 100`
 
-[![](https://s2.loli.net/2022/02/20/7V8fLOdnK2EztXg.png)](https://s2.loli.net/2022/02/20/7V8fLOdnK2EztXg.png)
+1. Enter `cdk create --once 10 console:econ add {player} 100`, which generates 10 one-time CDKs that execute the command to give coins
 
-2. Bukkit/Spigot端到插件配置文件`“`plugins/AnCDK`”`目录下，打开Config.yml，获取CDK！
+![example1_1](https://github.com/Lileep/AnCDK/blob/sponge/sample_img/example1_1.png)
 
-Sponge端为`config/ancdk`目录下的`cdks.conf`
+2. After the command is executed, open the `config/ancdk/cdks.conf` file in the back end to view the generated 10 CDKs
 
-[![](https://s2.loli.net/2022/02/20/8z91nwyL6lGihPF.png)](https://s2.loli.net/2022/02/20/8z91nwyL6lGihPF.png)
+![example1_2](https://github.com/Lileep/AnCDK/blob/sponge/sample_img/example1_2.png)
 
-3. 复制CDK发送给亲爱的玩家~~
-
-[![](https://s2.loli.net/2022/02/20/EuneWjSbaCNtsrV.png)](https://s2.loli.net/2022/02/20/EuneWjSbaCNtsrV.png)
-
-4. 亲爱的玩家到服务器使用命令“/ancdk [CDK]”使用CDK
-
-[![](https://s2.loli.net/2022/02/20/L1INUvGDcYpRSPy.png)](https://s2.loli.net/2022/02/20/L1INUvGDcYpRSPy.png)
-
-5. CDK使用成功！玩家很开心！
-
-[![](https://s2.loli.net/2022/02/20/z2hRmLHdtKkB83x.png)](https://s2.loli.net/2022/02/20/z2hRmLHdtKkB83x.png)
+3. Use any generated CDK in game, such as `/ancdk 43b7039b49ac19`, to use the CDK 
 
 ***
 
-例2（Sponge）：手动添加1个永久的CDK，每个玩家执行后控制台会为其发放5个钻石
+e.g. 2: Manually add 1 permanent CDK that can be executed by every player. When players execute it, your console will give 5 diamonds to the users.
 
-思路：打开配置文件并手动写入CDK，绑定命令为`console:give {player} minecraft:diamond 5`
+Idea: Open the config file and manually write a CDK, the binding command is `console:give {player} minecraft:diamond 5`
 
-1. 使用任意文本编辑器打开`config/ancdk/cdks.conf`文件
+1. Open the `config/ancdk/cdks.conf` file with any text editor
 
-2. 按照配置文件示例格式进行书写。这里我们将`5diamond`作为CDK的内容，并将指令和空的已使用玩家列表写进去
+2. Write in the sample config file format. Here we use `5diamond` as the content of the CDK, then write the command and an empty list presents for used player in it
 
 ![example2](https://github.com/Lileep/AnCDK/blob/sponge/sample_img/example2.png)
 
-3. 在服务端/客户端中输入`/ancdk reload`重载插件或直接重启，即可在游戏中输入`/ancdk 5diamond`领取该CDK
+3. Enter `/ancdk reload` to reload the plug-in or restart your server, you can then enter `/ancdk 5diamond` in game to run the CDK
 
 
-## 插件下载
+## Download
 
-Bukkit/Spigot: https://enron.lanzouv.com/b00pee79a 密码:giih
+https://wwt.lanzouy.com/b03cxpegj , password: 2dsf
 
-Sponge: https://wwt.lanzouy.com/ipDUH04cg5ad 密码:d3zi
+Or download in the release page of this repo
 
-或在仓库release中下载
-
-## 开源地址
+## Open-source Link
 
 Bukkit/Spigot:
 
@@ -171,7 +136,7 @@ Bukkit/Spigot:
 
 Sponge:
 
-[https://github.com/Enron233/AnCDK](https://github.com/Enron233/AnCDK "https://github.com/Enron233/AnCDK")
+[https://github.com/Lileep/AnCDK/tree/sponge](https://github.com/Lileep/AnCDK/tree/sponge "https://github.com/Lileep/AnCDK/tree/sponge")
 
-### 我是小安~ 感谢你的使用~~
-### Sponge版AnCDK，由触手百合（Lileep）开发
+### Bukkit/Spigot version AnCDK is developed by Enron233 (An)~ Thanks for using~~
+### Sponge version AnCDK is developed by Lileep
