@@ -36,7 +36,10 @@ public class CDKCfgHandler extends AbstractCDKHandler {
                 } else {
                     node.getNode(cdkey).setValue(null);
                 }
-                runCDKCmd(ConfigLoader.getInstance().getCdkNode().getNode(cdkey, "command").getString().replace("{player}", player.getName()), player);
+                String[] commands = command.replace("{player}", player.getName()).split(";");
+                for (String s : commands) {
+                    runCDKCmd(s, player);
+                }
                 ConfigLoader.getInstance().getCdkLoader().save(node);
                 if (ConfigLoader.getInstance().getRootNode().getNode("General", "useLog").getBoolean()) {
                     setLog(player.getName(), "use", cdkey);
