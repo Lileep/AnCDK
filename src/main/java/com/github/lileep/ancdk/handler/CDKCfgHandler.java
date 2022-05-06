@@ -25,6 +25,7 @@ public class CDKCfgHandler extends AbstractCDKHandler {
         ConfigurationNode node = ConfigLoader.getInstance().getCdkNode();
         if (Optional.ofNullable(node.getNode(cdkey).getString()).isPresent()) {
             try {
+                String command = ConfigLoader.getInstance().getCdkNode().getNode(cdkey, "command").getString();
                 if (Optional.ofNullable(node.getNode(cdkey, "usedPlayer").getValue(setToken)).isPresent()) {
                     Set<String> tempSet = (HashSet<String>) node.getNode(cdkey, "usedPlayer").getValue(setToken);
                     if (tempSet.contains(player.getName())) {
