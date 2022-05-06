@@ -14,6 +14,24 @@
 
 ## 插件命令
 
+### Bukkit/Spigot:
+
+> 管理员命令:
+
+| 命令 | 功能 |
+| ---- | ---- |
+| /ancdk create [命令] [数量] | 创建`[数量]`个执行`[命令]`的CDK |
+| /ancdk export | 批量一键导出所有CDK |
+| /ancdk reload | 重载插件配置文件 |
+
+> 玩家命令:
+
+| 命令 | 功能 |
+| ---- | ---- |
+| /ancdk [CDK] | 使用CDK |
+
+### Sponge:
+
 > 本插件命令还有如下写法：`ancdkey`, `cdk`, `cdkey`
 
 > 管理员命令:
@@ -37,15 +55,15 @@
 | 节点 | 描述 |
 | ---- | ---- |
 | `ancdk.admin` | 总权限。给予此权限后无需剩余管理员权限 |
-| `ancdk.admin.create` | 创建CDK |
-| `ancdk.admin.export` | 导出CDK |
-| `ancdk.admin.reload` | 重载 |
+| `ancdk.admin.create` | 创建CDK（仅sponge） |
+| `ancdk.admin.export` | 导出CDK（仅sponge） |
+| `ancdk.admin.reload` | 重载（仅sponge） |
 
 > 用户权限
 
 | 节点 | 描述 |
 | ---- | ---- |
-| `ancdk.user` | 使用CDK的权限 |
+| `ancdk.user` | 使用CDK的权限（仅sponge，Bukkit/Spigot无需此权限即可使用） |
 
 ## 插件变量：
  
@@ -66,7 +84,7 @@ Bukkit/Spigot配置文件示例：
 Sponge配置文件示例（cdks.conf）： 
 仅可执行一次的CDK： 
 "1ll73hur1bhm" {                                 ## CDKey内容
-    command="console:eco give {player} 100"      ## 使用CDK后要执行的命令。可在命令前添加"console:"来指定是否以控制台身份执行
+    command="eco give {player} 100"      ## 使用CDK后要执行的命令。可在命令前添加"console:"来指定是否以控制台身份执行
 }
 
 每个玩家均可执行一次的CDK： 
@@ -146,6 +164,12 @@ Sponge: https://wwt.lanzouy.com/ipDUH04cg5ad 密码:d3zi
 或在仓库release中下载
 
 ## 开源地址
+
+Bukkit/Spigot:
+
+[https://github.com/Enron233/AnCDK](https://github.com/Enron233/AnCDK "https://github.com/Enron233/AnCDK")
+
+Sponge:
 
 [https://github.com/Enron233/AnCDK](https://github.com/Enron233/AnCDK "https://github.com/Enron233/AnCDK")
 
