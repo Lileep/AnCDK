@@ -3,17 +3,18 @@
  
  This repo is the Sponge version of this plugin, you may go to the open-source repo link at the bottom of this repo if you need the Bukkit/Spigot version.
  
-## Feature
+## Features
 
 1. Automatic CDK generation of more than 9-bit
 2. CDK of same types can be generated in batches
 3. Flexible command execution source (console/player)
-4. highly customizable configs
-5. CDK adding manually
-6. Support CDK exporting in batches
-7. Support SQL
-8. Support multiple languages
-9. Feel free to reply if you have any suggestions, it may become a feature of this plugin in future~
+4. Execute multiple commands once
+5. highly customizable configs
+6. CDK adding manually
+7. Support CDK exporting in batches
+8. Support SQL
+9. Support multiple languages
+10. Feel free to reply if you have any suggestions, it may become a feature of this plugin in future~
 
 ## Commands
 
@@ -23,7 +24,7 @@
 
 | Command | Description |
 | ---- | ---- |
-| /ancdk create <--once> [count] [command] | Create `[count]` of CDK(s) that run `[command]` <br> Use param `console:` in front of your command to specify the command source to console <br> Use param `--once` to let your CDK be a one-time one, otherwise all players can run it once |
+| /ancdk create <--once> [count] [command] | Create `[count]` of CDK(s) that run `[command]` <br> Use param `console:` in front of your command to specify the command source to console <br> Use param `--once` to let your CDK be a one-time one, otherwise all players can run it once <br> Use `;` to separate if you have multiple commands |
 | /ancdk export <csv> | Export all CDKs in batches. Use param `csv` can only export cdkeys as a csv file instead of exporting all details |
 | /ancdk reload | Reload the config file of the plugin |
 
