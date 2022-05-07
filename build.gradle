@@ -63,4 +63,4 @@ jar {
     }
 }
 
-sponge.plugin.id = 'ancdk'
+sponge.plugin.id = 'ancdk_sponge'

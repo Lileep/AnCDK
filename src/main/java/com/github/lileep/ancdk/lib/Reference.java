@@ -2,7 +2,7 @@ package com.github.lileep.ancdk.lib;
 
 public class Reference {
 
-    public static final String PLUGIN_ID = "ancdk";
+    public static final String PLUGIN_ID = "ancdk_sponge";
     public static final String PLUGIN_NAME = "AnCDK";
     public static final String VERSION = "1.0";
 
